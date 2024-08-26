@@ -17,12 +17,9 @@ app.post('/usuarios', async (req, res) => {
             email: req.body.email,
             name: req.body.name,
             age: req.body.age
-
         }
     })
-
     res.status(201).json(req.body)
-
 })
 
 app.get('/usuarios', async (req, res) => {

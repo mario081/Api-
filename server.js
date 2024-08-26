@@ -1,4 +1,5 @@
 import express from 'express'
+import cors from 'cors'
 import { PrismaClient } from '@prisma/client'
 
 
@@ -6,11 +7,12 @@ const prisma = new PrismaClient()
 
 const app = express()
 app.use(express.json())
+app.use(cors())
 
 
-app.post('/usuarios', async ( req, res) =>{
+app.post('/usuarios', async (req, res) => {
 
-    const criar = await prisma.user.create({
+    await prisma.user.create({
         data: {
             email: req.body.email,
             name: req.body.name,
@@ -19,23 +21,23 @@ app.post('/usuarios', async ( req, res) =>{
         }
     })
 
-    res.status(201).json({users:criar})
+    res.status(201).json(req.body)
 
 })
 
-app.get('/usuarios', async ( req, res) => {
+app.get('/usuarios', async (req, res) => {
 
     const users = await prisma.user.findMany()
 
-    res.status(200).json({users:users})
+    res.status(200).json(users)
 })
 
-app.put('/usuarios/:id', async (req, res) =>{
+app.put('/usuarios/:id', async (req, res) => {
     //console.log(req.body);
-    
+
     let body = req.body
-     let update = await prisma.user.update({
-        where : {
+    let update = await prisma.user.update({
+        where: {
             id: req.params.id
         },
         data: {
@@ -50,15 +52,15 @@ app.put('/usuarios/:id', async (req, res) =>{
 
 app.delete('/usuarios/:id', async (req, res) => {
     try {
-    await prisma.user.delete({
-        where: {
-            id: req.params.id,
-        },
-    })
-        res.status(200).json({ message: 'Deletado com sucesso!'})
-} catch {
-        res.status(403).json({ message: 'usuario ja Deletado!'})
-}
+        await prisma.user.delete({
+            where: {
+                id: req.params.id,
+            },
+        })
+        res.status(200).json({ message: 'Deletado com sucesso!' })
+    } catch {
+        res.status(403).json({ message: 'usuario ja Deletado!' })
+    }
 })
 
 
